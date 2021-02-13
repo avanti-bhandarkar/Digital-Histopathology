@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image  
 import pandas as pd
-from rgb2hsv import HSVColor
+from helpers import HSVColor
     
 print('Loading image ...\n')
 #Load image in PIL (for RGB and HSV features)
