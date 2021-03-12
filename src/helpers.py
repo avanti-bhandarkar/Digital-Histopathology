@@ -65,19 +65,19 @@ def detect_peaks(img):
     neighborhood = generate_binary_structure(2,2)
 
     #Apply the local maximum filter such that all pixel of maximal value in their neighborhood are set to 1
-    local_max = maximum_filter(img, footprint=neighborhood)==img
-    #local_max is a mask that contains the peaks and the background as well 
+    localmax = maximum_filter(img, footprint=neighborhood)==img
+    #localmax is a mask that contains the peaks and the background as well 
   
     #rRemove the background from the mask by isolating the peaks as follows
 
     #Create the mask of the background
     background = (img==0)
 
-    #Erode the background in order to successfully subtract it from local_max
+    #Erode the background in order to successfully subtract it from localmax
     #Not doing this step will create a line will along the background border (artifact of the local maximum filter)
-    eroded_background = binary_erosion(background, structure=neighborhood, border_value=0)
+    eroded = binary_erosion(background, structure=neighborhood, border_value=0)
 
-    #Obtain the final mask containing only peaks by removing the background from the local_max mask (xor operation)
-    detected_peaks = local_max ^ eroded_background
+    #Obtain the final mask containing only peaks by removing the background from the localmax mask (xor operation)
+    peaks = localmax ^ eroded
 
-    return detected_peaks
+    return peaks
