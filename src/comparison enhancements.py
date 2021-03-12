@@ -2,7 +2,7 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
-img = cv2.imread('/Users/avantibhandarkar/Desktop/digital histopathology/ip images/slide1.jpg',0)
+img = cv2.imread('ip images/slide1.jpg',0)
 ret,thresh1 = cv2.threshold(img,100,255,cv2.THRESH_BINARY)
 ret,thresh2 = cv2.threshold(img,100,255,cv2.THRESH_BINARY_INV)
 ret,thresh3 = cv2.threshold(img,100,255,cv2.THRESH_TRUNC)
