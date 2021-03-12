@@ -3,6 +3,11 @@ from PIL import Image
 
 #Define a function to convert RGB (Red, Blue, Green) to HSV (Hue, Saturation, Value) colourspace 
 def rgb_to_hsv(r, g, b):
+    """
+    Takes red, green and blue (RGB) channel values of a pixel.
+    Returns the hue, saturation and value (HSV) conversion of these values
+    Conversions used are from http://www.brucelindbloom.com/index.html?Math.html
+    """
     maxc = max(r, g, b) # Extract maximum red,blue and green values from the image
     minc = min(r, g, b) # Extract minimum red,blue and green values from the image
     v = maxc # Set value equal to maximum RGB value
@@ -23,8 +28,11 @@ def rgb_to_hsv(r, g, b):
     h = (h/6.0) % 1.0
     return h, s, v
 
-#Define a function to obtain HSV color from the loaded image
 def HSVColor(img):
+    """
+    Takes an RGB image as the input and converts to HSV colourspace.
+    Returns the HSV version of the input image 
+    """
     if isinstance(img,Image.Image): # The code below is only executed if the image has been loaded using PIL
         r,g,b = img.split() # Split the RGB image into constituent channels
         # Initialise empty lists for HSV values
@@ -44,3 +52,32 @@ def HSVColor(img):
         return Image.merge('RGB',(r,g,b))
     else:
         return None
+
+def detect_peaks(img):
+
+    """
+    Takes an image and detect the peaks usingthe local maximum filter.
+    Returns a boolean mask of the peaks (i.e. 1 when
+    the pixel's value is the neighborhood maximum, 0 otherwise)
+    """
+
+    # Define an 8-connected neighborhood
+    neighborhood = generate_binary_structure(2,2)
+
+    #Apply the local maximum filter such that all pixel of maximal value in their neighborhood are set to 1
+    local_max = maximum_filter(img, footprint=neighborhood)==img
+    #local_max is a mask that contains the peaks and the background as well 
+  
+    #rRemove the background from the mask by isolating the peaks as follows
+
+    #Create the mask of the background
+    background = (img==0)
+
+    #Erode the background in order to successfully subtract it from local_max
+    #Not doing this step will create a line will along the background border (artifact of the local maximum filter)
+    eroded_background = binary_erosion(background, structure=neighborhood, border_value=0)
+
+    #Obtain the final mask containing only peaks by removing the background from the local_max mask (xor operation)
+    detected_peaks = local_max ^ eroded_background
+
+    return detected_peaks
